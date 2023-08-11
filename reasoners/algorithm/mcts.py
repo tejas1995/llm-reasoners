@@ -168,7 +168,7 @@ class MCTS(SearchAlgorithm, Generic[State, Action]):
             # information can be cached and passed from the world model
             # to the reward function with **aux without repetitive computation
             node.reward, node.reward_details = self.search_config. \
-                reward(node.parent.state, node.action, **node.fast_reward_details, **aux)
+                reward(node.parent.state, **node.fast_reward_details, **aux) # Removed node.action argument
             node.is_terminal = self.world_model.is_terminal(node.state)
 
         if node.is_terminal:
@@ -177,7 +177,9 @@ class MCTS(SearchAlgorithm, Generic[State, Action]):
         children = []
         actions = self.search_config.get_actions(node.state)
         for action in actions:
-            fast_reward, fast_reward_details = self.search_config.fast_reward(node.state, action)
+            copy_node = deepcopy(node)
+            next_state = self.world_model.step(copy_node.state, action)[0]
+            fast_reward, fast_reward_details = self.search_config.fast_reward(next_state)#, action)
             child = MCTSNode(state=None, action=action, parent=node,
                              fast_reward=fast_reward, fast_reward_details=fast_reward_details, calc_q=self.calc_q)
             children.append(child)

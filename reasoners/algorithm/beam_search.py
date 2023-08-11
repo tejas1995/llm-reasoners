@@ -187,7 +187,8 @@ class BeamSearch(SearchAlgorithm, Generic[State, Action]):
                         if self.unbiased and self.sampling_strategy == 'stochastic':
                             # the action should have action.action_prob
                             try:
-                                reward, reward_aux = config.reward(state, action, **aux)
+                                #reward, reward_aux = config.reward(state, action, **aux)
+                                reward, reward_aux = config.reward(next_state, **aux)
                                 acc_action_prob = reward_aux['acc_action_prob']
                                 cur_action_prob = reward_aux['cur_action_prob']
                             except:
@@ -197,7 +198,8 @@ class BeamSearch(SearchAlgorithm, Generic[State, Action]):
                                                    is the accumulated action probability, and \
                                                    'cur_action_prob', which is the current action probability.")
                         else:
-                            reward = config.reward(state, action, **aux)
+                            #reward = config.reward(state, action, **aux)
+                            reward = config.reward(next_state, **aux)
 
                             # if the reward is a tuple, then it is (reward, aux)
                             if isinstance(reward, tuple):
